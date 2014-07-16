@@ -75,11 +75,16 @@ gulp.task('extras', function () {
         .pipe(gulp.dest('dist'));
 });
 
+gulp.task('data', function () {
+    return gulp.src('app/data/**/*')
+        .pipe(gulp.dest('dist/data'));
+});
+
 gulp.task('clean', function () {
     return gulp.src(['.tmp', 'dist'], { read: false }).pipe($.clean());
 });
 
-gulp.task('build', ['html', 'images', 'fonts', 'extras']);
+gulp.task('build', ['html', 'images', 'fonts', 'extras', 'data']);
 
 gulp.task('default', ['clean'], function () {
     gulp.start('build');
