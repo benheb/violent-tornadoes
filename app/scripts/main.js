@@ -96,5 +96,6 @@ App.prototype._buildCharts = function() {
         }
       }
   });
+  console.log('notice me')
 
 }
