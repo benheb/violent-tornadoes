@@ -6,11 +6,13 @@
         <meta name="description" content="">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
-
+        <link href='http://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css'>
         <!-- build:css styles/vendor.css -->
         <!-- bower:css -->
         <!-- endbower -->
         <!-- endbuild -->
+        <link href='https://api.tiles.mapbox.com/mapbox.js/v1.6.4/mapbox.css' rel='stylesheet' />
+        <link href="styles/c3.css" rel="stylesheet" type="text/css">
 
         <!-- build:css styles/main.css -->
         <link rel="stylesheet" href="styles/main.css">
@@ -21,46 +23,60 @@
         <!-- endbuild -->
     </head>
     <body>
-        <!--[if lt IE 10]>
-            <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
-        <![endif]-->
+        
+        <section class="page-section" id="map-section">
 
-        <div class="container">
-            <div class="header">
-                <ul class="nav nav-pills pull-right">
-                    <li class="active"><a href="#">Home</a></li>
-                    <li><a href="#">About</a></li>
-                    <li><a href="#">Contact</a></li>
-                </ul>
-                <h3 class="text-muted">violent tornadoes</h3>
+          <div id="header">
+            <h1>Violent Tornadoes</h1>
+          </div>
+
+          <div class="map-container">
+            <div id="map"></div>
+          </div>
+        </section>
+
+        <section class="page-section" id="what-section">
+          <div class="what-container container">
+            <div class="row">
+              <h2>What are 'Violent Tornadoes'</h2>
             </div>
-
-            <div class="jumbotron">
-                <h1>'Allo, 'Allo!</h1>
-                <p class="lead">Always a pleasure scaffolding your apps.</p>
-                <p><a class="btn btn-lg btn-success" href="#">Splendid!</a></p>
+            <div class="row">
+              <div id="define">
+                Tornadoes of F4/f5/EF-4/EF-5 status are considered violent tornadoes. These tornadoes produce winds from 166mph 
+                to over 200mph. These are wind estimates based on damage from 28 indicators outlined by the National Weather Service. 
+              </div>
             </div>
+          </div>
+        </section>
 
-            <div class="row marketing">
-                <div class="col-lg-6">
-                    <h4>HTML5 Boilerplate</h4>
-                    <p>HTML5 Boilerplate is a professional front-end template for building fast, robust, and adaptable web apps or sites.</p>
-
-                    <h4>Sass</h4>
-                    <p>Sass is the most mature, stable, and powerful professional grade CSS extension language in the world.</p>
-
-                    <h4>Bootstrap</h4>
-                    <p>Sleek, intuitive, and powerful mobile first front-end framework for faster and easier web development.</p>
-                    <h4>Modernizr</h4>
-                    <p>Modernizr is an open-source JavaScript library that helps you build the next generation of HTML5 and CSS3-powered websites.</p>
-
-                </div>
+        <section class="page-section" id="stats-section">
+          <div class="stats-container container">
+            <div class="row">
+              <div class="col-md-3">
+                <h4>Number of Violent Tornadoes Per Year</h4>
+                Here are some fascinating graphs. Data is the best when it's best. Charts are charty.
+              </div>
+              <div class="col-md-9">
+                <div id="chart"></div>
+              </div>
             </div>
+          </div>
+        </section>
 
-            <div class="footer">
-                <p>♥ from the Yeoman team</p>
+        <section class="page-section" id="focus-section">
+          <div class="stats-container container">
+            <div class="row">
+              <div class="col-md-6">
+                <h4>Focus Section</h4>
+                Maybe we look at the 'top 3' violent tors, and have pics/vids to go along with them in this section.
+              </div>
+              <div class="col-md-6">
+                
+              </div>
             </div>
-        </div>
+          </div>
+        </section>
+
 
         <!-- Google Analytics: change UA-XXXXX-X to be your site's ID. -->
         <script>
@@ -93,8 +109,23 @@
         <script src="bower_components/bootstrap-sass-official/vendor/assets/javascripts/bootstrap/tab.js"></script>
         <!-- endbuild -->
 
+        <script src='https://api.tiles.mapbox.com/mapbox.js/v1.6.4/mapbox.js'></script>
+        
         <!-- build:js scripts/main.js -->
+        <script src="scripts/d3.js"></script>
+        <script src="scripts/c3.min.js"></script>
         <script src="scripts/main.js"></script>
         <!-- endbuild -->
+        <script>
+          $(document).ready(function() {
+            init_app();
+          });
+          
+          var app;
+          function init_app(){
+            app = new App({});
+            window.app = app;
+          }
+        </script>
 </body>
 </html>
