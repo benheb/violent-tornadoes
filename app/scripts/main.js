@@ -22,22 +22,18 @@ App.prototype._createMap = function() {
   }
 
   this.map = L.mapbox.map('map', 'mapbox.blue-marble-topo-bathy-jul-bw', options)
-      .setView([40, -97.50], 5);
+      .setView([40, -80.50], 5);
 
   $.getJSON('data/violent-tors.json', function(data) {
     console.log('data', data);
 
     function onEachFeature(feature, layer) {
-      var popupContent = "<p>I started out as a GeoJSON " +
-          feature.geometry.type + ", but now I'm a Leaflet vector!</p>";
-
-      if (feature.properties && feature.properties.popupContent) {
-        popupContent += feature.properties.popupContent;
-      }
-
-      layer.bindPopup(popupContent);
+      layer.on({
+        click: function(e){
+          self._onClick(feature);
+        }
+      });
     }
-
 
     L.geoJson(data, {
 
@@ -63,7 +59,16 @@ App.prototype._createMap = function() {
 
 }
 
-
+App.prototype._onClick = function(feature) {
+  var year = moment(feature.properties.Date).format("dddd, MMMM Do YYYY"); 
+  var fatalities = feature.properties.Fatalities;
+  var injuries = feature.properties.Injuries;
+  var damage = feature.properties.Damage;
+  $('#year').html(year);
+  $('#fatalities').html(fatalities);
+  $('#injuries').html(injuries);
+  $('#damage').html((damage !== "$-") ? damage : "n/a");
+}
 
 App.prototype._buildCharts = function() {
   var chart = c3.generate({

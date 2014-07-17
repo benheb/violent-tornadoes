@@ -2,7 +2,6 @@ $icon-font-path: "../bower_components/bootstrap-sass-official/vendor/assets/font
 
 // bower:scss
 @import "../bower_components/bootstrap-sass-official/vendor/assets/stylesheets/bootstrap.scss";
-@import "c3.scss";
 // endbower
 
 body { 
@@ -32,11 +31,26 @@ section {
   min-height: 500px;
 }
 
+#content-sidebar {
+  width: 35%;
+  position: absolute;
+  z-index: 10;
+  background: rgba(0, 0, 0, 0.4);
+  right: 0;
+  height: 100%;
+  padding:20px;
+}
+
 #map { 
   position:absolute; 
   top:0; 
   bottom:0; 
   width:100%; 
+}
+
+.attr-row {
+  font-size:1.8vw;
+  padding:2px;
 }
 
 //what
