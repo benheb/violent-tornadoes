@@ -11,6 +11,13 @@ App.prototype._initUI = function() {
   var width = $(window).width();
 
   $('#map-section').css({'height': height+'px'});
+
+  $(window).on('resize', function() {
+    var height = $(window).height();
+    var width = $(window).width();
+
+    $('#map-section').css({'height': height+'px'});
+  });
 }
 
 App.prototype._createMap = function() {
@@ -24,6 +31,28 @@ App.prototype._createMap = function() {
   this.map = L.mapbox.map('map', 'mapbox.blue-marble-topo-bathy-jul-bw', options)
       .setView([40, -80.50], 5);
 
+  this.style = {
+    radius: 8,
+    fillColor: "#ff7800",
+    color: "#000",
+    weight: 1,
+    opacity: 1,
+    fillOpacity: 0.8
+  }
+
+  function states(feature) {
+    return {
+        fillColor: "none",
+        weight: 2,
+        opacity: 0.5,
+        color: 'white',
+        weight:0.5,
+        fillOpacity: 0.3
+    };
+  }
+
+  L.geoJson(statesData, {style: states}).addTo(this.map);
+
   $.getJSON('data/violent-tors.json', function(data) {
     console.log('data', data);
 
@@ -31,27 +60,18 @@ App.prototype._createMap = function() {
       layer.on({
         click: function(e){
           self._onClick(feature);
+          self._clearSelection();
+          self._selectFeature(e);
         }
       });
     }
 
-    L.geoJson(data, {
-
-      style: function (feature) {
-        return feature.properties && feature.properties.style;
-      },
+    self.layer = L.geoJson(data, {
 
       onEachFeature: onEachFeature,
 
       pointToLayer: function (feature, latlng) {
-        return L.circleMarker(latlng, {
-          radius: 8,
-          fillColor: "#ff7800",
-          color: "#000",
-          weight: 1,
-          opacity: 1,
-          fillOpacity: 0.8
-        });
+        return L.circleMarker(latlng, self.style);
       }
     }).addTo(self.map);
 
@@ -60,14 +80,46 @@ App.prototype._createMap = function() {
 }
 
 App.prototype._onClick = function(feature) {
+  
   var year = moment(feature.properties.Date).format("dddd, MMMM Do YYYY"); 
   var fatalities = feature.properties.Fatalities;
   var injuries = feature.properties.Injuries;
   var damage = feature.properties.Damage;
+  var research = feature.properties.RESEARCH;
+  var youtube = function() {
+    if ( feature.properties.YOUTUBE ) {
+      return '<iframe width="100%" height="300px" src="//www.youtube.com/embed/-FI1OYyI4Kg" frameborder="0" allowfullscreen></iframe>';
+    } else {
+      return "";
+    }
+  
+  }
+  $('#content').show();
   $('#year').html(year);
   $('#fatalities').html(fatalities);
   $('#injuries').html(injuries);
   $('#damage').html((damage !== "$-") ? damage : "n/a");
+  $('#research').html(research);
+  $('#youtube').html(youtube);
+}
+
+App.prototype._selectFeature = function(e) {
+  var layer = e.target;
+
+  layer.setStyle({
+      weight: 5,
+      color: '#FFF',
+      dashArray: '',
+      fillOpacity: 0.7
+  });
+
+  if (!L.Browser.ie && !L.Browser.opera) {
+      layer.bringToFront();
+  }
+}
+
+App.prototype._clearSelection = function(e) {
+  this.layer.setStyle(this.style);
 }
 
 App.prototype._buildCharts = function() {
@@ -101,6 +153,5 @@ App.prototype._buildCharts = function() {
         }
       }
   });
-  console.log('notice me')
 
 }

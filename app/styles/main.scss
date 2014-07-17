@@ -32,13 +32,24 @@ section {
 }
 
 #content-sidebar {
-  width: 35%;
+  width: 500px;
   position: absolute;
   z-index: 10;
   background: rgba(0, 0, 0, 0.4);
   right: 0;
   height: 100%;
   padding:20px;
+  overflow-y: auto;
+  h3, h5 {
+    text-align:center;
+    margin-top:0px;
+  }
+  h5 {
+    margin-bottom:15px;
+  }
+}
+#content {
+  display:none;
 }
 
 #map { 
@@ -49,8 +60,9 @@ section {
 }
 
 .attr-row {
-  font-size:1.8vw;
-  padding:2px;
+  font-size: 1.6em;
+  padding: 2px;
+  margin-bottom: 5px;
 }
 
 //what
