@@ -5,9 +5,8 @@ var gulp = require('gulp');
 
 // load plugins
 var $ = require('gulp-load-plugins')();
-var concat = require('gulp-concat');
-var deploy = require("gulp-gh-pages");
 
+var deploy = require("gulp-gh-pages");
 var options = {
   branch: "gh-pages"
 }
@@ -28,11 +27,9 @@ gulp.task('styles', function () {
 });
 
 gulp.task('scripts', function () {
-    return gulp.src('app/scripts/*.js')
-        //.pipe($.jshint())
-        //.pipe($.jshint.reporter(require('jshint-stylish')))
-        .pipe(concat('main.js'))
-        .pipe(gulp.dest('dist/scripts'))
+    return gulp.src('app/scripts/**/*.js')
+        .pipe($.jshint())
+        .pipe($.jshint.reporter(require('jshint-stylish')))
         .pipe($.size());
 });
 
