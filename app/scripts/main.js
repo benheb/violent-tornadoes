@@ -111,8 +111,14 @@ App.prototype._createMap = function() {
 
   $.getJSON('data/violent-tors.json', function(data) {
     console.log('data', data);
+    $('#tor-total-count').html(data.features.length);
+
+    self._dataByYear(data);
+    self.features = [];
 
     function onEachFeature(feature, layer) {
+      self.features.push(feature);
+
       layer.on({
         click: function(e){
           self._onClick(feature);
@@ -135,6 +141,91 @@ App.prototype._createMap = function() {
 
 }
 
+
+App.prototype._dataByYear = function(data) {
+  var self = this;
+  this.years = {};
+  _.each(data.features, function(f) {
+    var year = moment(f.properties.Date).format('YYYY');
+    if ( !self.years[year] ) {
+      self.years[year] = [ f ];
+    } else {
+      self.years[year].push(f);
+    }
+  });
+  this._chartTorsByYear();
+}
+
+
+App.prototype._chartTorsByYear = function() {
+  var self = this;
+
+  var years = _.keys(this.years);
+  var counts = [];
+  _.each(self.years, function(f) {
+    counts.push(f.length);
+  });
+
+  counts.unshift("Violent Tornadoes by Year");
+
+  var chart = c3.generate({
+      bindto: '#chart-intro',
+      data: {
+        columns: [
+            counts
+        ],
+        type: "bar",
+        onmouseover: function (d, i) { self.onMouseEnter(d,i); },
+        onmouseout: function (d, i) { self.onMouseLeave(); }
+      },
+      axis: {
+          x: {
+              type: 'category',
+              categories: years
+          }
+      }
+  });
+}
+
+
+App.prototype.onMouseEnter = function(d, i) {
+  var self = this;
+  var years = _.keys(this.years);
+  var yr = years[d.x].toString(); 
+  
+  self.graphicsLayer = L.geoJson([], {
+    pointToLayer: function (feature, latlng) {
+      return L.circleMarker(latlng);
+    }
+  }).addTo(self.map);
+
+  _.each(this.features, function(f) {
+    var year = moment(f.properties.Date).format('YYYY');
+    if ( year === yr ) {
+      var feature = {};
+      feature.properties = f.properties;
+      feature.geometry = f.geometry;
+      feature.type = f.type;
+      self.graphicsLayer.addData( feature );
+    }
+  });
+
+  var style = {};
+  style.color = "#FFF";
+  style.weight = 3;
+  style.opacity = 1;
+  this.graphicsLayer.setStyle(style);
+
+  if (!L.Browser.ie && !L.Browser.opera) {
+    this.graphicsLayer.bringToFront();
+  }
+
+}
+
+App.prototype.onMouseLeave = function(d, i) {
+  this.map.removeLayer(this.graphicsLayer);
+}
+
 App.prototype._onClick = function(feature) {
   
   var year = moment(feature.properties.Date).format("dddd, MMMM Do YYYY"); 
@@ -150,6 +241,7 @@ App.prototype._onClick = function(feature) {
     }
   
   }
+  $('#intro').hide();
   $('#content').show();
   $('#year').html(year);
   $('#fatalities').html(fatalities);

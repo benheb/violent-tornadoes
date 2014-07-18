@@ -32,7 +32,16 @@
           <div class="map-container">
             <div id="content-sidebar">
               <h3>Violent Tornadoes 2000 to 2013</h3>
-              <h5>Exploring EF4 and EF5 Tornadoes in the United States</h5>
+              <h5>EF4 and EF5 Tornadoes in the United States</h5>
+              <div id="intro">
+                <div id="text-intro" class="col-md-12">
+                  Since 2000, there have been <span id="tor-total-count"></span> what are classified as violent tornadoes
+                  in the United States. The year with the most was 2011, with 23 violent tornadoes. The year with the least, 2005, with just 1. Data for 2014 will be added when available.
+                  <br /><br />
+                  <span class="help">Select marker on map to explore, hover chart to select by year.</span> 
+                </div>
+                <div id="chart-intro"></div>
+              </div>
               <div id="content">
                 <div class="row attr-row">
                   <div class="col-md-2">Date: </div><div class="col-md-10 attr" id="year"></div>
@@ -74,6 +83,7 @@
         <!-- bower:js -->
         <script src="bower_components/jquery/dist/jquery.js"></script>
         <script src="bower_components/moment/moment.js"></script>
+        <script src="bower_components/underscore/underscore.js"></script>
         <!-- endbower -->
         <!-- endbuild -->
 
