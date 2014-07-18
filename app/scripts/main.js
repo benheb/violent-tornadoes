@@ -81,19 +81,29 @@ App.prototype._createMap = function() {
   var self = this;
 
   var options = {
-    scrollWheelZoom: false
+    //scrollWheelZoom: false
   }
 
   this.map = L.mapbox.map('map', 'mapbox.blue-marble-topo-bathy-jul-bw', options)
       .setView([40, -80.50], 5);
 
-  this.style = {
-    radius: 8,
-    fillColor: "#ed3285",
-    color: "#FFF",
-    weight: 0,
-    opacity: 1,
-    fillOpacity: 0.8
+  var fill = function(feature) {
+    if (feature.properties.Fujita === "5") {
+      return "#7CFC00";
+    } else {
+      return "#ed3285";
+    }
+  }
+
+  function style(feature) {
+    return {
+      radius: 8,
+      fillColor: fill(feature),
+      color: "#FFF",
+      weight: 0,
+      opacity: 1,
+      fillOpacity: 0.8
+    }
   }
 
   function states(feature) {
@@ -114,6 +124,7 @@ App.prototype._createMap = function() {
     $('#tor-total-count').html(data.features.length);
 
     self._dataByYear(data);
+    self._drawLines(data);
     self.features = [];
 
     function onEachFeature(feature, layer) {
@@ -143,12 +154,35 @@ App.prototype._createMap = function() {
       onEachFeature: onEachFeature,
 
       pointToLayer: function (feature, latlng) {
-        return L.circleMarker(latlng, self.style);
-      }
+        return L.circleMarker(latlng);
+      },
+
+      style: style
+
+    }).addTo(self.map);
+
+    self.style = style;
+  });
+
+}
+
+
+App.prototype._drawLines = function(data) {
+  console.log('data', data);
+  var self = this;
+  _.each(data.features, function(feature) {
+    var line = [];
+    line.push([feature.geometry.coordinates[1], feature.geometry.coordinates[0]]);
+    line.push([parseFloat(feature.properties.LiftoffLat), parseFloat(feature.properties.LiftoffLon)]);
+    
+    self.polyLayer = L.polyline(line, {
+      color: '#FFF',
+      weight: 1,
+      opacity: 1,
+      smoothFactor: 1
     }).addTo(self.map);
 
   });
-
 }
 
 
@@ -238,7 +272,8 @@ App.prototype.onMouseLeave = function(d, i) {
 }
 
 App.prototype._onClick = function(feature) {
-  
+  console.log('feature', feature);
+
   var year = moment(feature.properties.Date).format("dddd, MMMM Do YYYY"); 
   var fatalities = feature.properties.Fatalities;
   var injuries = feature.properties.Injuries;
