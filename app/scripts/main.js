@@ -89,9 +89,9 @@ App.prototype._createMap = function() {
 
   this.style = {
     radius: 8,
-    fillColor: "#ff7800",
-    color: "#000",
-    weight: 1,
+    fillColor: "#ed3285",
+    color: "#FFF",
+    weight: 0,
     opacity: 1,
     fillOpacity: 0.8
   }
