@@ -122,8 +122,18 @@ App.prototype._createMap = function() {
       layer.on({
         click: function(e){
           self._onClick(feature);
+          self._clicked = true;
           self._clearSelection();
           self._selectFeature(e);
+        },
+        mouseover: function(e) {
+          self._clearSelection();
+          self._selectFeature(e);
+        },
+        mouseout: function(e) {
+          if ( !self._clicked ) {
+            self._clearSelection();
+          }
         }
       });
     }
@@ -212,8 +222,9 @@ App.prototype.onMouseEnter = function(d, i) {
 
   var style = {};
   style.color = "#FFF";
-  style.weight = 3;
+  style.weight = 2;
   style.opacity = 1;
+  style.fillColor = "none";
   this.graphicsLayer.setStyle(style);
 
   if (!L.Browser.ie && !L.Browser.opera) {
@@ -235,7 +246,7 @@ App.prototype._onClick = function(feature) {
   var research = feature.properties.RESEARCH;
   var youtube = function() {
     if ( feature.properties.YOUTUBE ) {
-      return '<iframe width="100%" height="300px" src="//www.youtube.com/embed/-FI1OYyI4Kg" frameborder="0" allowfullscreen></iframe>';
+      return feature.properties.YOUTUBE;
     } else {
       return "";
     }
@@ -255,7 +266,7 @@ App.prototype._selectFeature = function(e) {
   var layer = e.target;
 
   layer.setStyle({
-      weight: 5,
+      weight: 2,
       color: '#FFF',
       dashArray: '',
       fillOpacity: 0.7

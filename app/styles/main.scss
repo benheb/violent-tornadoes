@@ -56,6 +56,10 @@ section {
     padding-bottom: 14px;
     margin-bottom: 20px;
   }
+  #youtube iframe {
+    width:100% !important;
+    height:300px !important;
+  }
 }
 #content {
   display:none;
