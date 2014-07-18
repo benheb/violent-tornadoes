@@ -2,8 +2,11 @@ $icon-font-path: "../bower_components/bootstrap-sass-official/vendor/assets/font
 
 // bower:scss
 @import "../bower_components/bootstrap-sass-official/vendor/assets/stylesheets/bootstrap.scss";
-@import "c3.scss";
 // endbower
+
+// c3:scss 
+@import "c3.scss";
+// endc3
 
 body { 
   margin:0; 
