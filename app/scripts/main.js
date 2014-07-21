@@ -282,6 +282,13 @@ App.prototype._onClick = function(feature) {
   console.log('feature', feature);
 
   var year = moment(feature.properties.Date).format("dddd, MMMM Do YYYY"); 
+  var time = feature.properties.Time;
+  var scale = feature.properties.Fujita;
+  var state1 = feature.properties.State1;
+  var state2 = (feature.properties.State2 !== "-") ? ", " + feature.properties.State2 : undefined;
+  var nws = feature.properties["NWS INFO"];
+  var desc = feature.properties["BRIEF DESCRIPT"];
+  var spc = feature.properties["SPC"];
   var fatalities = feature.properties.Fatalities;
   var injuries = feature.properties.Injuries;
   var damage = feature.properties.Damage;
@@ -296,11 +303,21 @@ App.prototype._onClick = function(feature) {
   }
   $('#intro').hide();
   $('#content').show();
+  $('#scale').html("EF"+scale);
+  if ( state2 !== undefined ) {
+    $('#states').html(state1 + state2);
+  } else {
+    $('#states').html(state1);
+  }
   $('#year').html(year);
+  $('#description').html(desc);
+  $('#spc-link').html("<a href="+spc+">"+spc+"</a>");
+  $('#nws-link').html("<a href="+nws+">"+nws+"</a>");
+  $('#research').html("<a href="+research+">"+research+"</a>");
+  $('#time').html(time);
   $('#fatalities').html(fatalities);
   $('#injuries').html(injuries);
   $('#damage').html((damage !== "$-") ? damage : "n/a");
-  $('#research').html(research);
   $('#youtube').html(youtube);
 }
 
