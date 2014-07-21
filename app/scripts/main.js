@@ -85,6 +85,7 @@ App.prototype._createMap = function() {
   }
 
   this.map = L.mapbox.map('map', 'mapbox.blue-marble-topo-bathy-jul-bw', options)
+  //this.map = L.mapbox.map('map', 'mapbox.blue-marble-topo-bathy-jul-bw', options)
       .setView([40, -80.50], 5);
 
   this.map.on('click', function() {
