@@ -94,4 +94,11 @@ Date,Time,State1,State2,Fujita,Fatalities,Injuries,Width,Length,Damage,latitude,
 10/4/2013,16:12:00,Nebraska,-,4,0,15,2429,18.34,"$500,000 ",42.128,-97.077,42.3592,-96.8886
 10/4/2013,17:35:00,Iowa,-,4,0,0,2600,24.7,"$2,010,000 ",42.3319,-96.1086,42.5818,-95.7623
 11/17/2013,10:59:00,Illinois,-,4,3,125,880,46.36,"$935,225,000 ",40.622,-89.5678,41.0063,-88.8439
-11/17/2013,12:04:00,Illinois,-,4,2,2,200,10.59,-,38.42,-89.45,38.48,-89.27
+11/17/2013,12:04:00,Illinois,-,4,2,2,200,10.59,-,38.42,-89.45,38.48,-89.27,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+4/27/2014,19:06:00,Arkansas,-,4,16,UNK,1320,41.3,UNK,34.77867938,-92.65204648,35.14147793,-92.07867985,Mayflower,,http://www.srh.noaa.gov/lzk/?n=svr0414c.htm,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+4/28/2014,15:53:00,Mississippi,-,4,10,UNK,1320,34.3,UNK,32.8826,-89.4308,33.1891,-89.0028,Louisville,,http://www.srh.noaa.gov/jan/?n=2014_04_27_28_29_winston_tor,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+6/16/2014,15:42:00,Nebraska,-,4,0,UNK,UNK,12.21,UNK,41.8929,-97.3296,42.0424,-97.2098,Stanton,,http://www.crh.noaa.gov/news/display_cmsstory.php?wfo=oax&storyid=102897,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,note: check to make sure this was fatal tor
+6/16/2014,16:00:00,Nebraska,-,4,1,UNK,UNK,18.41,UNK,41.9512,-97.1366,42.1269,-96.8701,Pilger,,http://www.crh.noaa.gov/news/display_cmsstory.php?wfo=oax&storyid=102897,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+6/16/2014,16:13:00,Nebraska,,4,1,UNK,UNK,11.84,UNK,41.9753,-97.0389,42.1163,-96.9402,Pilger,,http://www.crh.noaa.gov/news/display_cmsstory.php?wfo=oax&storyid=102897,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+6/16/2014,16:40:00,Nebraska,-,4,0,UNK,UNK,16.22,UNK,42.1196,-96.8565,42.3511,-96.808,Wakefield,,http://www.crh.noaa.gov/news/display_cmsstory.php?wfo=oax&storyid=102897,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+6/18/2014,18:43:00,South Dakota,-,4,0,UNK,880,11.65,UNK,44.0372,-98.4032,44.2001,-98.4032,Alpena,,http://www.crh.noaa.gov/news/display_cmsstory.php?wfo=fsd&storyid=103065&source=2,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
