@@ -56,6 +56,8 @@ var statesData = {"type":"FeatureCollection","features":[
 
 var App = function() {
 
+  this._noGraphics = true;
+
   this._initUI();
   this._createMap();
   this._buildCharts();
@@ -217,12 +219,16 @@ App.prototype._chartTorsByYear = function() {
     counts.push(f.length);
   });
 
+  var fourteen = counts[counts.length - 1 ];
+  $('#fourteen-count').html(fourteen);
   counts.unshift("Violent Tornadoes by Year");
+  counts.pop(1);
 
   var chart = c3.generate({
       bindto: '#chart-intro',
       data: {
         columns: [
+            ["2014 (preliminary)", null, null, null, null, null, null, null, null, null, null, null, null, null, null, fourteen],
             counts
         ],
         type: "bar",
@@ -240,6 +246,8 @@ App.prototype._chartTorsByYear = function() {
 
 
 App.prototype.onMouseEnter = function(d, i) {
+  if ( this._noGraphics === false ) return;
+
   var self = this;
   var years = _.keys(this.years);
   var yr = years[d.x].toString(); 
@@ -261,6 +269,8 @@ App.prototype.onMouseEnter = function(d, i) {
     }
   });
 
+  this._noGraphics = false;
+
   var style = {};
   style.color = "#FFF";
   style.weight = 2;
@@ -276,6 +286,7 @@ App.prototype.onMouseEnter = function(d, i) {
 
 App.prototype.onMouseLeave = function(d, i) {
   this.map.removeLayer(this.graphicsLayer);
+  this._noGraphics = true;
 }
 
 App.prototype._onClick = function(feature) {
@@ -303,7 +314,7 @@ App.prototype._onClick = function(feature) {
   }
   $('#intro').hide();
   $('#content').show();
-  $('#scale').html("EF"+scale);
+  $('#scale').html("F/EF"+scale);
   if ( state2 !== undefined ) {
     $('#states').html(state1 + state2);
   } else {
