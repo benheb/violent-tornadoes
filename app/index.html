@@ -12,8 +12,9 @@
         <!-- bower:css -->
         <!-- endbower -->
         <!-- endbuild -->
-        <link href='https://api.tiles.mapbox.com/mapbox.js/v1.6.4/mapbox.css' rel='stylesheet' />
 
+        <link rel="stylesheet" href="http://js.arcgis.com/3.9/js/esri/css/esri.css">
+        
         <!-- build:css styles/main.css -->
         <link rel="stylesheet" href="styles/main.css">
         <!-- endbuild -->
@@ -92,16 +93,19 @@
                 <div id="more-stats">
                   <h5>Description and Resources</h5>
                   <div class="row attr-row">
+                    <div class="col-md-12" id="total-and-days">
+                      One of <span id="total-outbreak-tor" class="callout"></span> tornadoes over <span id="total-days" class="callout"></span> days.
+                    </div>
+                  </div>
+                  <div class="row attr-row">
                     <div class="col-md-12" id="description"></div>
                   </div>
-                  <div class="row attr-row">
-                    <div class="col-md-2">NWS: </div><div class="col-md-10 link" id="nws-link"></div>
-                  </div>
-                  <div class="row attr-row">
-                    <div class="col-md-2">SPC: </div><div class="col-md-10 link" id="spc-link"></div>
-                  </div>
-                  <div class="row attr-row">
-                    <div class="col-md-2">Research: </div><div class="col-md-10 link" id="research"></div>
+                  <div class="row attr-row" id="links">
+                    <div class="col-md-12">
+                      <div class="links">NWS: </div><div class="link" id="nws-link"></div>
+                      <div class="links">SPC: </div><div class="link" id="spc-link"></div>
+                      <div class="links">Research: </div><div class="link" id="research" style="border-right:none"></div>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -144,8 +148,6 @@
         <script src="bower_components/bootstrap-sass-official/vendor/assets/javascripts/bootstrap/collapse.js"></script>
         <script src="bower_components/bootstrap-sass-official/vendor/assets/javascripts/bootstrap/tab.js"></script>
         <!-- endbuild -->
-
-        <script src='https://api.tiles.mapbox.com/mapbox.js/v1.6.4/mapbox.js'></script>
         
         <!-- build:js scripts/main.js -->
         <script src="scripts/d3.js"></script>
@@ -153,6 +155,9 @@
         <!--<script src="scripts/us.js"></script>-->
         <script src="scripts/main.js"></script>
         <!-- endbuild -->
+
+        <script src="http://js.arcgis.com/3.9/"></script>
+
         <script>
           $(document).ready(function() {
             init_app();

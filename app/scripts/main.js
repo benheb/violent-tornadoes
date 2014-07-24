@@ -55,12 +55,19 @@ var statesData = {"type":"FeatureCollection","features":[
 
 
 var App = function() {
+  var self = this;
 
   this._noGraphics = true;
 
   this._initUI();
   this._createMap();
   this._buildCharts();
+
+  $('#header').on('click', function() {
+    self._clearSelection();
+    $('#content').hide();
+    $('#intro').show();
+  })
 
 }
 
@@ -82,114 +89,101 @@ App.prototype._createMap = function() {
   /* map */
   var self = this;
 
-  var options = {
-    //scrollWheelZoom: false
-  }
+  require(["esri/map", "dojo/request", "esri/geometry/Circle", "esri/symbols/SimpleFillSymbol", 
+    "esri/graphic", "esri/layers/GraphicsLayer", "esri/geometry/Point", "esri/SpatialReference", "esri/layers/ArcGISTiledMapServiceLayer", 
+    "esri/layers/FeatureLayer", "dojo/domReady!"], function(Map, request, Circle, SimpleFillSymbol, Graphic, GraphicsLayer, Point, SpatialReference) { 
 
-  this.map = L.mapbox.map('map', 'mapbox.blue-marble-topo-bathy-jul-bw', options)
-  //this.map = L.mapbox.map('map', 'mapbox.blue-marble-topo-bathy-jul-bw', options)
-      .setView([40, -80.50], 5);
-
-  this.map.on('click', function() {
-    self._clearSelection();
-    $('#content').hide();
-    $('#intro').show();
-  });
-
-  var fill = function(feature) {
-    if (feature.properties.Fujita === "5") {
-      return "#7CFC00";
-    } else {
-      return "#ed3285";
-    }
-  }
-
-  function style(feature) {
-    return {
-      radius: 8,
-      fillColor: fill(feature),
-      color: "#FFF",
-      weight: 0,
-      opacity: 1,
-      fillOpacity: 0.8
-    }
-  }
-
-  function states(feature) {
-    return {
-        fillColor: "none",
-        weight: 2,
-        opacity: 0.5,
-        color: 'white',
-        weight:0.5,
-        fillOpacity: 0.3
+    esriConfig.defaults.map.basemaps.dotted = {
+      baseMapLayers: [
+        { url: "http://studio.esri.com/arcgis/rest/services/World/WorldBasemapBlack/MapServer" }
+      ],
+      title: "dots"
     };
-  }
 
-  L.geoJson(statesData, {style: states}).addTo(this.map);
+    self.map = new Map("map", {
+      center: [-75.049, 38.485],
+      zoom: 5,
+      basemap: "hybrid"
+    });
+    
+    self.gl = new GraphicsLayer({ id: "circles" });
+    self.selectedLayer = new GraphicsLayer({ id: "selected" });
+    self.paths = new GraphicsLayer({id: "paths"});
+    self.map.addLayer(self.paths);
+    self.map.addLayer(self.gl);
+    self.map.addLayer(self.selectedLayer);
+    
 
-  $.getJSON('data/violent-tors.json', function(data) {
-    console.log('data', data);
-    $('#tor-total-count').html(data.features.length);
-
-    self._dataByYear(data);
-    self._drawLines(data);
-    self.features = [];
-
-    function onEachFeature(feature, layer) {
-      self.features.push(feature);
-
-      layer.on({
-        click: function(e){
-          self._onClick(feature);
-          self._clicked = true;
-          self._clearSelection();
-          self._selectFeature(e);
-        },
-        mouseover: function(e) {
-          self._clearSelection();
-          self._selectFeature(e);
-        },
-        mouseout: function(e) {
-          if ( !self._clicked ) {
-            self._clearSelection();
-          }
-        }
-      });
+    function add(f){
+      var point = {"geometry":{"x":f.geometry.coordinates[0],"y":f.geometry.coordinates[1],
+      "spatialReference":{wkid: 4326}}, "attributes": f.properties, 
+        "symbol":{"color": (f.properties.Fujita === "5") ? [124,252,0,200] : [237,50,133,200],
+      "size":11, "angle":0,"xoffset":0,"yoffset":0,"type":"esriSMS",
+      "style":"esriSMSCircle","outline":{"color":[171,23,89,0],"width":0,
+      "type":"esriSLS","style":"esriSLSSolid"}}};
+      
+      var gra = new Graphic(point);
+      self.gl.add(gra);
     }
 
-    self.layer = L.geoJson(data, {
 
-      onEachFeature: onEachFeature,
+    self.map.on('click', function() {
+      return;
+      self._clearSelection();
+      $('#content').hide();
+      $('#intro').show();
+    });
 
-      pointToLayer: function (feature, latlng) {
-        return L.circleMarker(latlng);
-      },
+    self.gl.on('click', function(e) {
+      self._onClick(e);
+      self._clearSelection();
+      self._selectFeature(e);
+    });
 
-      style: style
+    self.gl.on('mouse-over', function(e) {
+      //self._onClick(e);
+      self._clearSelection();
+      self._selectFeature(e);
+    });
 
-    }).addTo(self.map);
+    self.gl.on('mouse-exit', function(e) {
+      //self._onClick(e);
+      self._clearSelection();
+      //self._selectFeature(e);
+    });
 
-    self.style = style;
+    $.getJSON('data/violent-tors.json', function(data) {
+      console.log('data', data);
+      $('#tor-total-count').html(data.features.length);
+
+      self._dataByYear(data);
+      self._drawLines(data, Graphic);
+      self.features = [];
+
+      _.each(data.features, function(feature) {
+        add(feature);
+      });
+      
+    });
+
   });
 
 }
 
 
-App.prototype._drawLines = function(data) {
-  console.log('data', data);
+App.prototype._drawLines = function(data, Graphic) {
   var self = this;
   _.each(data.features, function(feature) {
     var line = [];
-    line.push([feature.geometry.coordinates[1], feature.geometry.coordinates[0]]);
-    line.push([parseFloat(feature.properties.LiftoffLat), parseFloat(feature.properties.LiftoffLon)]);
+    line.push([feature.geometry.coordinates[0], feature.geometry.coordinates[1]]);
+    line.push([parseFloat(feature.properties.LiftoffLon), parseFloat(feature.properties.LiftoffLat)]);
     
-    self.polyLayer = L.polyline(line, {
-      color: '#FFF',
-      weight: 1,
-      opacity: 1,
-      smoothFactor: 1
-    }).addTo(self.map);
+    var myLine ={geometry:{"paths":[line],
+    "spatialReference":{"wkid":4326}},
+    "symbol":{"color":[255,255,255,255],"width":1,"type":"esriSLS","style":"esriSLSSolid"}};
+  
+    var gra= new Graphic(myLine);
+    self.paths.add(gra);
 
   });
 }
@@ -252,47 +246,38 @@ App.prototype.onMouseEnter = function(d, i) {
   var years = _.keys(this.years);
   var yr = years[d.x].toString(); 
   
-  self.graphicsLayer = L.geoJson([], {
-    pointToLayer: function (feature, latlng) {
-      return L.circleMarker(latlng);
-    }
-  }).addTo(self.map);
-
-  _.each(this.features, function(f) {
-    var year = moment(f.properties.Date).format('YYYY');
+  _.each(self.gl.graphics, function(feature) {
+    var year = moment(feature.attributes.Date).format('YYYY');
     if ( year === yr ) {
-      var feature = {};
-      feature.properties = f.properties;
-      feature.geometry = f.geometry;
-      feature.type = f.type;
-      self.graphicsLayer.addData( feature );
+      var graphic = {};
+      graphic.geometry = feature.geometry;
+      graphic.attributes = feature.attributes;
+      graphic.symbol = {
+        "color":[255,255,255,1],"size":10,"angle":0,"xoffset":0,"yoffset":0,"type":"esriSMS","style":"esriSMSCircle",
+        "outline":{"color":[255,255,255,255],"width":2,
+        "type":"esriSLS","style":"esriSLSSolid"}
+      };
+
+      var g = new esri.Graphic( graphic );
+      self.selectedLayer.add(g);
     }
   });
 
   this._noGraphics = false;
 
-  var style = {};
-  style.color = "#FFF";
-  style.weight = 2;
-  style.opacity = 1;
-  style.fillColor = "none";
-  this.graphicsLayer.setStyle(style);
-
-  if (!L.Browser.ie && !L.Browser.opera) {
-    this.graphicsLayer.bringToFront();
-  }
-
 }
 
 App.prototype.onMouseLeave = function(d, i) {
-  this.map.removeLayer(this.graphicsLayer);
+  this._clearSelection();
   this._noGraphics = true;
 }
 
-App.prototype._onClick = function(feature) {
-  console.log('feature', feature);
+App.prototype._onClick = function(e) {
+  var feature = e.graphic;
+  feature.properties = feature.attributes;
 
-  var year = moment(feature.properties.Date).format("dddd, MMMM Do YYYY"); 
+  var year = moment(feature.properties.Date).format("dddd, MMMM Do YYYY");
+  var y = moment(feature.properties.Date).format("YYYY");
   var time = feature.properties.Time;
   var scale = feature.properties.Fujita;
   var state1 = feature.properties.State1;
@@ -304,6 +289,8 @@ App.prototype._onClick = function(feature) {
   var injuries = feature.properties.Injuries;
   var damage = feature.properties.Damage;
   var research = feature.properties.RESEARCH;
+  var totalTor = feature.properties["TOTAL TOR"];
+  var totalDays = feature.properties["CALENDAR DAYS"];
   var youtube = function() {
     if ( feature.properties.YOUTUBE ) {
       return feature.properties.YOUTUBE;
@@ -314,7 +301,13 @@ App.prototype._onClick = function(feature) {
   }
   $('#intro').hide();
   $('#content').show();
-  $('#scale').html("F/EF"+scale);
+
+  if (parseFloat(y) < 2007 ) {
+    $('#scale').html("F"+scale);
+  } else {
+    $('#scale').html("F/EF"+scale);
+  }
+  
   if ( state2 !== undefined ) {
     $('#states').html(state1 + state2);
   } else {
@@ -322,33 +315,35 @@ App.prototype._onClick = function(feature) {
   }
   $('#year').html(year);
   $('#description').html(desc);
-  $('#spc-link').html("<a href="+spc+">"+spc+"</a>");
-  $('#nws-link').html("<a href="+nws+">"+nws+"</a>");
-  $('#research').html("<a href="+research+">"+research+"</a>");
+  $('#spc-link').html("<a href="+spc+">Outlooks, watches, other details</a>");
+  $('#nws-link').html("<a href="+nws+">Tornado survey info</a>");
+  $('#research').html("<a href="+research+">Scientific event breakdown</a>");
   $('#time').html(time);
   $('#fatalities').html(fatalities);
   $('#injuries').html(injuries);
   $('#damage').html((damage !== "$-") ? damage : "n/a");
   $('#youtube').html(youtube);
+  $('#total-outbreak-tor').html(totalTor);
+  $('#total-days').html(totalDays);
 }
 
 App.prototype._selectFeature = function(e) {
-  var layer = e.target;
+  
+  var graphic = {};
+  graphic.geometry = e.graphic.geometry;
+  graphic.attributes = e.graphic.attributes;
+  graphic.symbol = {
+    "color":[255,255,255,1],"size":10,"angle":0,"xoffset":0,"yoffset":0,"type":"esriSMS","style":"esriSMSCircle",
+    "outline":{"color":[255,255,255,255],"width":2,
+    "type":"esriSLS","style":"esriSLSSolid"}
+  };
 
-  layer.setStyle({
-      weight: 2,
-      color: '#FFF',
-      dashArray: '',
-      fillOpacity: 0.7
-  });
-
-  if (!L.Browser.ie && !L.Browser.opera) {
-      layer.bringToFront();
-  }
+  var g = new esri.Graphic( graphic );
+  this.selectedLayer.add(g);
 }
 
 App.prototype._clearSelection = function(e) {
-  this.layer.setStyle(this.style);
+  if ( this.selectedLayer.graphics.length > 0) this.selectedLayer.clear();
 }
 
 App.prototype._buildCharts = function() {
