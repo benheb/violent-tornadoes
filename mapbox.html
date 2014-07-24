@@ -9,9 +9,10 @@
         <link href='http://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css'>
         <link href='http://fonts.googleapis.com/css?family=Abril+Fatface' rel='stylesheet' type='text/css'>
         <link rel="stylesheet" href="styles/vendor.css">
-
-        <link rel="stylesheet" href="http://js.arcgis.com/3.9/js/esri/css/esri.css">
         
+        <link rel="stylesheet" href="http://js.arcgis.com/3.9/js/esri/css/esri.css">
+        <script src="http://js.arcgis.com/3.9/"></script>
+
         <link rel="stylesheet" href="styles/main.css">
 
         <script src="scripts/vendor/modernizr.js"></script>
@@ -86,19 +87,16 @@
                 <div id="more-stats">
                   <h5>Description and Resources</h5>
                   <div class="row attr-row">
-                    <div class="col-md-12" id="total-and-days">
-                      One of <span id="total-outbreak-tor" class="callout"></span> tornadoes over <span id="total-days" class="callout"></span> days.
-                    </div>
-                  </div>
-                  <div class="row attr-row">
                     <div class="col-md-12" id="description"></div>
                   </div>
-                  <div class="row attr-row" id="links">
-                    <div class="col-md-12">
-                      <div class="links">NWS: </div><div class="link" id="nws-link"></div>
-                      <div class="links">SPC: </div><div class="link" id="spc-link"></div>
-                      <div class="links">Research: </div><div class="link" id="research" style="border-right:none"></div>
-                    </div>
+                  <div class="row attr-row">
+                    <div class="col-md-2">NWS: </div><div class="col-md-10 link" id="nws-link"></div>
+                  </div>
+                  <div class="row attr-row">
+                    <div class="col-md-2">SPC: </div><div class="col-md-10 link" id="spc-link"></div>
+                  </div>
+                  <div class="row attr-row">
+                    <div class="col-md-2">Research: </div><div class="col-md-10 link" id="research"></div>
                   </div>
                 </div>
               </div>
@@ -124,9 +122,6 @@
         <script src="scripts/plugins.js"></script>
         
         <script src="scripts/main.js"></script>
-
-        <script src="http://js.arcgis.com/3.9/"></script>
-
         <script>
           $(document).ready(function() {
             init_app();
