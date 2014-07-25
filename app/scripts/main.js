@@ -127,11 +127,8 @@ App.prototype._createMap = function() {
     }
 
 
-    self.map.on('click', function() {
-      return;
-      self._clearSelection();
-      $('#content').hide();
-      $('#intro').show();
+    self.map.on('click', function(e) {
+      self._onClick(e);
     });
 
     self.gl.on('click', function(e) {
@@ -273,6 +270,15 @@ App.prototype.onMouseLeave = function(d, i) {
 }
 
 App.prototype._onClick = function(e) {
+  var self = this;
+
+  if ( !e.graphic ) {
+    $('#content').hide();
+    $('#intro').show();
+    this._clearSelection();
+    return;
+  }
+
   var feature = e.graphic;
   feature.properties = feature.attributes;
 
@@ -282,9 +288,17 @@ App.prototype._onClick = function(e) {
   var scale = feature.properties.Fujita;
   var state1 = feature.properties.State1;
   var state2 = (feature.properties.State2 !== "-") ? ", " + feature.properties.State2 : undefined;
+  
+  //resources 
   var nws = feature.properties["NWS INFO"];
   var desc = feature.properties["BRIEF DESCRIPT"];
   var spc = feature.properties["SPC"];
+  var mediaOne = feature.properties["MEDIA"];
+  var mediaTwo = feature.properties["MEDIA 2"];
+  var nwsPic = feature.properties["NWS PIC"];
+  var pic = feature.properties["OTH PIC"];
+  var picTwo = feature.properties["OTH PIC2"];
+
   var fatalities = feature.properties.Fatalities;
   var injuries = feature.properties.Injuries;
   var damage = feature.properties.Damage;
@@ -315,9 +329,49 @@ App.prototype._onClick = function(e) {
   }
   $('#year').html(year);
   $('#description').html(desc);
-  $('#spc-link').html("<a href="+spc+">Outlooks, watches, other details</a>");
-  $('#nws-link').html("<a href="+nws+">Tornado survey info</a>");
-  $('#research').html("<a href="+research+">Scientific event breakdown</a>");
+
+  //links
+  $('.links').empty().show();
+  if ( spc ) {
+    $('#spc').html("SPC: <a href='"+spc+"'>Outlooks, watches, other details</a>");
+  } else {
+    $('#spc').hide();
+  }
+  if ( nws ) {
+    $('#nws').html("NWS: <a href='"+nws+"'>Tornado survey info</a>");
+  } else {
+    $('#nws').hide();
+  }
+  if (research) {
+    $('#research').html("Research: <a href='"+research+"'>Scientific event breakdown</a>");
+  } else {
+    $('#research').hide();
+  }
+
+  if ( mediaOne !== "None" ) {
+    $('#media1').html("Media: <a href='"+mediaOne+"'>Media Resources</a>");
+  } else {
+    $('#media1').hide();
+  }
+
+  if ( mediaTwo !== "None" ) {
+    $('#media2').html("Media: <a href='"+mediaOne+"'>Additional Media Resources</a>");
+  } else {
+    $('#media2').hide();
+  }
+
+  if ( pic !== "None" ) {
+    $('#other-pic1').html("Images: <a href='"+pic+"'>Tornado Images</a>");
+  } else {
+    $('#other-pic1').hide();
+  }
+
+  if ( picTwo !== "None" ) {
+    $('#other-pic2').html("Images: <a href='"+pic+"'>Tornado Images</a>");
+  } else {
+    $('#other-pic2').hide();
+  }
+
   $('#time').html(time);
   $('#fatalities').html(fatalities);
   $('#injuries').html(injuries);

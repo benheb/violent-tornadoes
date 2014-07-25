@@ -102,6 +102,12 @@ section {
   #links div {
     float:left;
   }
+  .links {
+    margin-right: 5px;
+    border-right: 1px solid #3B3B3B;
+    padding-right: 5px;
+    line-height: 29px;
+  }
 }
 #content {
   display:none;
