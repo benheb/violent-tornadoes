@@ -93,13 +93,6 @@ App.prototype._createMap = function() {
     "esri/graphic", "esri/layers/GraphicsLayer", "esri/geometry/Point", "esri/SpatialReference", "esri/layers/ArcGISTiledMapServiceLayer", 
     "esri/layers/FeatureLayer", "dojo/domReady!"], function(Map, request, Circle, SimpleFillSymbol, Graphic, GraphicsLayer, Point, SpatialReference) { 
 
-    esriConfig.defaults.map.basemaps.dotted = {
-      baseMapLayers: [
-        { url: "http://studio.esri.com/arcgis/rest/services/World/WorldBasemapBlack/MapServer" }
-      ],
-      title: "dots"
-    };
-
     self.map = new Map("map", {
       center: [-75.049, 38.485],
       zoom: 5,
@@ -113,13 +106,13 @@ App.prototype._createMap = function() {
     self.map.addLayer(self.gl);
     self.map.addLayer(self.selectedLayer);
     
-
+    //"symbol":{"color": (f.properties.Fujita === "5") ? [124,252,0,200] : [237,50,133,200],
     function add(f){
       var point = {"geometry":{"x":f.geometry.coordinates[0],"y":f.geometry.coordinates[1],
       "spatialReference":{wkid: 4326}}, "attributes": f.properties, 
-        "symbol":{"color": (f.properties.Fujita === "5") ? [124,252,0,200] : [237,50,133,200],
-      "size":11, "angle":0,"xoffset":0,"yoffset":0,"type":"esriSMS",
-      "style":"esriSMSCircle","outline":{"color":[171,23,89,0],"width":0,
+        "symbol":{"color": (f.properties.Fujita === "5") ? [103,169,207] : [239,138,98],
+      "size":10, "angle":0,"xoffset":0,"yoffset":0,"type":"esriSMS",
+      "style":"esriSMSCircle","outline":{"color":[255,255,255,255],"width":0.3,
       "type":"esriSLS","style":"esriSLSSolid"}}};
       
       var gra = new Graphic(point);
@@ -139,13 +132,18 @@ App.prototype._createMap = function() {
 
     self.gl.on('mouse-over', function(e) {
       //self._onClick(e);
-      self._clearSelection();
-      self._selectFeature(e);
+      //self._clearSelection();
+      //self._selectFeature(e);
+      self._hoverFeature(e.graphic, true);
+    });
+
+    self.gl.on('mouse-out', function(e) {
+      self._hoverFeature(e.graphic, false);
     });
 
     self.gl.on('mouse-exit', function(e) {
       //self._onClick(e);
-      self._clearSelection();
+    //  self._clearSelection();
       //self._selectFeature(e);
     });
 
@@ -166,6 +164,19 @@ App.prototype._createMap = function() {
   });
 
 }
+
+
+// Enhance symbol when mouse is over graphic
+App.prototype._hoverFeature = function(g, show) {
+  var s = g.symbol;
+  if (show) {
+    s.outline.width = 3; // 5 if you want more emphasis
+    g.setSymbol(s);
+  } else {
+    s.outline.width = 0.3;
+    g.setSymbol(s);
+  }
+},
 
 
 App.prototype._drawLines = function(data, Graphic) {
@@ -223,6 +234,10 @@ App.prototype._chartTorsByYear = function() {
             counts
         ],
         type: "bar",
+        colors: {
+          '2014 (preliminary)': '#dfc27d',
+          'Violent Tornadoes by Year': '#80cdc1'
+        },
         onmouseover: function (d, i) { self.onMouseEnter(d,i); },
         onmouseout: function (d, i) { self.onMouseLeave(); }
       },
